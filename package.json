@@ -1,6 +1,6 @@
 {
-  "name": "@dashibase/lotion",
-  "version": "0.1.4",
+  "name": "lotion",
+  "version": "1.0.1",
   "type": "module",
   "main": "lib/lotion.js",
   "types": "types/src/index.d.ts",
