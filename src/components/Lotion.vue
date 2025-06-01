@@ -188,7 +188,7 @@ function merge (blockIdx: number) {
     setBlockType(blockIdx, BlockType.Text)
     setTimeout(()=>{
       blockElements.value[blockIdx].moveToStart()
-    })
+    }, 5)
     return
   }
 
@@ -211,7 +211,7 @@ function merge (blockIdx: number) {
     })
   } else {
     props.page.blocks.splice(blockIdx-1, 1)
-    setTimeout(() => blockElements.value[blockIdx-1].moveToStart())
+    setTimeout(() => blockElements.value[blockIdx-1].moveToStart(), 5)
   }
 }
 
@@ -221,6 +221,6 @@ function split (blockIdx: number) {
   const htmlValue = blockElements.value[blockIdx].getHtmlContent()
   props.page.blocks[blockIdx+1].details.value = htmlToMarkdown((caretPos.tag ? `<${caretPos.tag}>` : '') + (htmlValue ? htmlValue?.slice(caretPos.pos) : ''))
   props.page.blocks[blockIdx].details.value = htmlToMarkdown((htmlValue ? htmlValue?.slice(0, caretPos.pos) : '') + (caretPos.tag ? `</${caretPos.tag}>` : ''))
-  setTimeout(() => blockElements.value[blockIdx+1].moveToStart())
+  setTimeout(() => blockElements.value[blockIdx+1].moveToStart(), 5)
 }
 </script>

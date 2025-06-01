@@ -76,10 +76,10 @@ const emit = defineEmits([
 
 function getFirstChild () {
   if (isTextBlock(props.block.type)) {
-    if ((content.value as any).$el.firstChild.firstChild.childNodes.length > 1) {
-      return (content.value as any).$el.firstChild.firstChild.firstChild
+    if ((content.value as any).$el.firstChild.firstChild.firstChild.firstChild.childNodes.length > 1) {
+      return (content.value as any).$el.firstChild.firstChild.firstChild.firstChild
     } else {
-      return (content.value as any).$el.firstChild.firstChild.firstChild
+      return (content.value as any).$el.firstChild.firstChild.firstChild.firstChild
     }
   } else {
     if ((content.value as any).$el) return (content.value as any).$el.firstChild || content.value.$el
@@ -89,10 +89,10 @@ function getFirstChild () {
 
 function getLastChild () {
   if (isTextBlock(props.block.type)) {
-    if ((content.value as any).$el.firstChild.firstChild.childNodes.length > 1) {
-      return (content.value as any).$el.firstChild.firstChild.lastChild
+    if ((content.value as any).$el.firstChild.firstChild.firstChild.childNodes.length > 1) {
+      return (content.value as any).$el.firstChild.firstChild.firstChild.lastChild
     } else {
-      return (content.value as any).$el.firstChild.firstChild.firstChild
+      return (content.value as any).$el.firstChild.firstChild.firstChild.firstChild
     }
   } else {
     if ((content.value as any).$el) return (content.value as any).$el.firstChild || content.value.$el
@@ -102,7 +102,7 @@ function getLastChild () {
 
 function getInnerContent () {
   if (isTextBlock(props.block.type)) {
-    return (content.value as any).$el.firstChild.firstChild.firstChild
+    return (content.value as any).$el.firstChild.firstChild.firstChild.firstChild
   } else {
     return (content.value as any).$el.firstChild
   }
@@ -324,7 +324,7 @@ function getCaretPos () {
         if (selectedNode.childNodes[0].textContent && selectedNode.childNodes[0].textContent.length <= 1)
           selectedNode = selectedNode.childNodes[0];
       }
-      for (const [i, node] of (content.value as any).$el.firstChild.firstChild.childNodes.entries()) {
+      for (const [i, node] of (content.value as any).$el.firstChild.firstChild.firstChild.childNodes.entries()) {
         if (node === selectedNode) {
           offsetNode = node
           if (node.tagName) offset += 2 + node.tagName.length
@@ -380,8 +380,8 @@ function setCaretPos (caretPos:number) {
   if (innerContent) {
   if (isTextBlock(props.block.type)) {
       let offsetNode, offset = 0
-      const numNodes = (content.value as any).$el.firstChild.firstChild.childNodes.length
-      for (const [i, node] of (content.value as any).$el.firstChild.firstChild.childNodes.entries()) {
+      const numNodes = (content.value as any).$el.firstChild.firstChild.firstChild.childNodes.length
+      for (const [i, node] of (content.value as any).$el.firstChild.firstChild.firstChild.childNodes.entries()) {
         if (offset + node.textContent.length > caretPos || i === numNodes - 1) {
           offsetNode = node
           break
