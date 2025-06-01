@@ -97,7 +97,7 @@ const editor = useEditor({
 
 const setLink = () => {
   if (!editor.value) return
-  
+
   const previousUrl = editor.value.getAttributes('link').href
   const url = window.prompt('URL', previousUrl)
 
