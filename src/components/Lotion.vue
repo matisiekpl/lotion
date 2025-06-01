@@ -289,7 +289,7 @@ function split (blockIdx: number) {
     props.page.blocks[blockIdx+1].details.value = htmlToMarkdown((caretPos.tag ? `<${caretPos.tag}>` : '') + (htmlValue ? htmlValue?.slice(caretPos.pos) : ''))
     props.page.blocks[blockIdx].details.value = htmlToMarkdown((htmlValue ? htmlValue?.slice(0, caretPos.pos) : '') + (caretPos.tag ? `</${caretPos.tag}>` : ''))
   }
-  setTimeout(() => blockElements.value[blockIdx+1].moveToStart())
+  setTimeout(() => blockElements.value[blockIdx+1].setCaretPos(0), 5)
 }
 
 const title = ref<HTMLDivElement|null>(null)
