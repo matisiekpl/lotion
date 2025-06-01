@@ -13,6 +13,7 @@
         <BlockComponent :block="block" v-for="block, i in props.page.blocks" :key="i" :id="'block-'+block.id"
           :blockTypes="props.blockTypes"
           :readonly="props.readonly"
+          :isMerging="isMerging"
           :ref="el => blockElements[i] = (el as unknown as typeof Block)"
           @deleteBlock="deleteBlock(i)"
           @newBlock="insertBlock(i)"
@@ -53,6 +54,8 @@ const props = defineProps({
 })
 
 const editor = ref<HTMLDivElement|null>(null)
+const isMerging = ref(false) // Track if a merge operation is in progress
+
 document.addEventListener('mouseup', (event:MouseEvent) => {
   // Automatically focus on nearest block on click
   const blocks = document.getElementById('blocks')
@@ -181,6 +184,9 @@ async function setBlockType (blockIdx: number, type: BlockType) {
 }
 
 function merge (blockIdx: number) {
+  // Prevent multiple merges from happening simultaneously
+  if (isMerging.value) return
+  
   // When deleting the first character of non-text block
   // the block should first turn into a text block
   if([BlockType.H1, BlockType.H2, BlockType.H3,BlockType.Quote]
@@ -194,21 +200,41 @@ function merge (blockIdx: number) {
 
   if (blockIdx === 0) return
 
+  // Handle empty text block case
+  if (isTextBlock(props.page.blocks[blockIdx-1].type) && 
+      blockElements.value[blockIdx-1].getTextContent().length === 0) {
+    // Move content from current block to empty block above
+    props.page.blocks[blockIdx-1].details.value = (props.page.blocks[blockIdx] as any).details.value
+    // Remove current block
+    props.page.blocks.splice(blockIdx, 1)
+    blockElements.value[blockIdx-1].setCaretPos(0)
+    isMerging.value = true
+    setTimeout(() => {
+      blockElements.value[blockIdx-1].setCaretPos(0)
+      isMerging.value = false
+    }, 200)
+    return
+  }
+
   if (isTextBlock(props.page.blocks[blockIdx-1].type)) {
     const prevBlockContentLength = blockElements.value[blockIdx-1].getTextContent().length
     // props.page.blocks[blockIdx-1].details.value = ('<p>' + (props.page.blocks[blockIdx-1] as any).details.value.replace('<p>', '').replace('</p>', '') + blockElements.value[blockIdx].getHtmlContent().replaceAll(/\<br.*?\>/g, '').replace('<p>', '').replace('</p>', '') + '</p>').replace('</strong><strong>', '').replace('</em><em>', '')
     props.page.blocks[blockIdx-1].details.value = (props.page.blocks[blockIdx-1] as any).details.value + (props.page.blocks[blockIdx] as any).details.value
+    isMerging.value = true
     setTimeout(() => {
       blockElements.value[blockIdx-1].setCaretPos(prevBlockContentLength)
       props.page.blocks.splice(blockIdx, 1)
-    })
+      isMerging.value = false
+    }, 5)
   } else if ([BlockType.H1, BlockType.H2, BlockType.H3].includes(props.page.blocks[blockIdx-1].type)) {
     const prevBlockContentLength = (props.page.blocks[blockIdx-1] as any).details.value.length
     props.page.blocks[blockIdx-1].details.value += blockElements.value[blockIdx].getTextContent()
+    isMerging.value = true
     setTimeout(() => {
       blockElements.value[blockIdx-1].setCaretPos(prevBlockContentLength)
       props.page.blocks.splice(blockIdx, 1)
-    })
+      isMerging.value = false
+    }, 5)
   } else {
     props.page.blocks.splice(blockIdx-1, 1)
     setTimeout(() => blockElements.value[blockIdx-1].moveToStart(), 5)

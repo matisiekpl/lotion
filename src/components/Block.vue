@@ -60,6 +60,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isMerging: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits([
@@ -158,7 +162,8 @@ function keyDownHandler (event:KeyboardEvent) {
     }
   } else if (event.key === 'Enter') {
     event.preventDefault()
-    if (!(menu.value && menu.value.open)) {
+    // Prevent split if a merge operation is in progress
+    if (!(menu.value && menu.value.open) && !props.isMerging) {
       emit('split')
     }
   }
@@ -200,6 +205,7 @@ function highlightedLength () {
 }
 
 function moveToStart () {
+  console.log('moveToStart')
   if (isContentBlock()) {
     const firstChild = getFirstChild()
     if (firstChild) {
@@ -216,6 +222,7 @@ function moveToStart () {
 }
 
 function moveToEnd () {
+  console.log('moveToEnd')
   if (isContentBlock()) {
     const lastChild = getLastChild()
     if (lastChild) {
@@ -376,6 +383,7 @@ function getCaretPosWithoutTags () {
 }
 
 function setCaretPos (caretPos:number) {
+  console.log(caretPos)
   const innerContent = getInnerContent()
   if (innerContent) {
   if (isTextBlock(props.block.type)) {
